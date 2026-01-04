@@ -42,7 +42,7 @@
         .logo-img { 
             height: 60px; 
             position: absolute; 
-            left: 0; 
+            left: 15px; 
             background: #fff; 
             border-radius: 8px;
             padding: 4px;
@@ -78,7 +78,8 @@
         .cards-grid {
             flex-grow: 1;
             display: flex; flex-direction: column;
-            gap: 5px; padding-bottom: 10px;
+            gap: 5px; 
+            padding-bottom: 30px; /* Mantém o card de 400m subido */
         }
 
         .card {
@@ -182,6 +183,7 @@
         const icons = {"FÁCIL":"fa-leaf","MARATONA":"fa-plane-departure","LIMIAR":"fa-fire","INTERVALADO":"fa-rocket","REPETIÇÃO":"fa-gun","TIRO 400m":"fa-bolt"};
         const classes = {"FÁCIL":"z-facil","MARATONA":"z-maratona","LIMIAR":"z-limiar","INTERVALADO":"z-intervalo","REPETIÇÃO":"z-repeticao","TIRO 400m":"z-tiro"};
         let h = ""; let lb = 0;
+        
         for(let k in m){
             let a = p*m[k]; if(k==="LIMIAR") lb=a;
             h += `
@@ -196,17 +198,21 @@
                 <i class="fas ${icons[k]} card-icon"></i>
             </div>`;
         }
+        
+        /* AJUSTE TIRO 400m: Agora exibe o PACE (ritmo por km) */
+        /* Mínimo (mais rápido): Limiar / 1.20 | Máximo (mais lento): Limiar / 1.15 */
         h += `
         <div class="card z-tiro">
             <div class="card-info">
                 <div class="card-title">TIRO 400m</div>
                 <div class="paces-container">
-                    <div class="pace-box"><span class="card-paces">${s2t((lb/1.15)*0.4)}</span><span class="card-subtext">MÍN</span></div>
-                    <div class="pace-box"><span class="card-paces">${s2t((lb/1.10)*0.4)}</span><span class="card-subtext">MÁX</span></div>
+                    <div class="pace-box"><span class="card-paces">${s2t(lb/1.20)}</span><span class="card-subtext">MÍN</span></div>
+                    <div class="pace-box"><span class="card-paces">${s2t(lb/1.15)}</span><span class="card-subtext">MÁX</span></div>
                 </div>
             </div>
             <i class="fas fa-bolt card-icon"></i>
         </div>`;
+        
         document.getElementById('cardsResult').innerHTML = h;
     }
     window.onload = calcular;
