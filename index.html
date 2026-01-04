@@ -32,9 +32,18 @@
 
         .branding {
             display: flex; align-items: center; position: relative;
-            min-height: 60px; margin-bottom: 5px;
+            min-height: 70px; margin-bottom: 5px;
         }
-        .logo-img { height: 50px; filter: brightness(0) invert(1); position: absolute; left: 0; }
+        
+        /* Ajuste do Logo: removido o filtro que invertia a cor e corrigido o link */
+        .logo-img { 
+            height: 60px; 
+            position: absolute; 
+            left: 0; 
+            background: white; /* Adicionado fundo branco para destacar as letras pretas do logo */
+            border-radius: 5px;
+            padding: 2px;
+        }
         
         .title-group {
             width: 100%;
@@ -79,7 +88,6 @@
         .card-info { text-align: left; flex-grow: 1; }
         .card-title { font-weight: 800; font-size: 10px; text-transform: uppercase; margin-bottom: 2px; }
         
-        /* Estrutura de colunas para alinhar Mín e Máx */
         .paces-container {
             display: flex;
             gap: 20px;
@@ -87,10 +95,11 @@
         .pace-box {
             display: flex;
             flex-direction: column;
-            align-items: center; /* Centraliza o texto Mín/Máx com o pace */
-            min-width: 60px;
+            align-items: center; 
+            min-width: 65px;
         }
-        .card-paces { font-size: 18px; font-weight: 900; line-height: 1; }
+        /* Fonte monoespaçada para garantir que o ":" fique sempre no mesmo lugar */
+        .card-paces { font-family: 'Courier New', Courier, monospace; font-size: 19px; font-weight: 900; line-height: 1; }
         .card-subtext { 
             font-size: 9px; 
             text-transform: uppercase; 
@@ -102,7 +111,6 @@
 
         .card-icon { font-size: 18px; margin-left: 10px; }
 
-        /* Cores */
         .z-facil { border-left: 3px solid var(--color-facil); } .z-facil i, .z-facil .card-title { color: var(--color-facil); }
         .z-maratona { border-left: 3px solid var(--color-maratona); } .z-maratona i, .z-maratona .card-title { color: var(--color-maratona); }
         .z-limiar { border-left: 3px solid var(--color-limiar); } .z-limiar i, .z-limiar .card-title { color: var(--color-limiar); }
@@ -115,7 +123,7 @@
 
 <div class="app-container">
     <div class="branding">
-        <img src="C:\Users\lealcle\OneDrive - Electrolux\Área de Trabalho\QRZONE_CALC\logo_qr.png" alt="QR" class="logo-img">
+        <img src="logo_qr.png" alt="QR" class="logo-img">
         <div class="title-group">
             <div class="app-name">QRZONE</div>
             <div class="method-name">Método Quantum</div>
@@ -126,14 +134,16 @@
         <div class="input-group">
             <label>Distância</label>
             <select id="distSelect" onchange="toggleManual()">
-                <option value="5">5 KM</option><option value="10">10 KM</option>
-                <option value="21.1">21.1 KM (Meia)</option><option value="manual">Outra</option>
+                <option value="5">5 KM</option>
+                <option value="10" selected>10 KM</option>
+                <option value="21.1">21.1 KM (Meia)</option>
+                <option value="manual">Outra</option>
             </select>
-            <input type="number" id="distManual" style="display:none; margin-top:5px">
+            <input type="number" id="distManual" style="display:none; margin-top:5px" placeholder="Distância em KM">
         </div>
         <div class="input-group">
             <label>Tempo (HH:MM:SS)</label>
-            <input type="text" id="tempoInput" value="00:23:00" oninput="maskTime(this)">
+            <input type="text" id="tempoInput" value="00:50:00" oninput="maskTime(this)">
         </div>
         <button onclick="calcular()">CALCULAR</button>
     </div>
