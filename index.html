@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QRZONE - Quantum Running</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --glass-bg: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --accent-color: #ffffff;
+            --text-main: #e0e0e0;
+        }
+
+        body {
+            background: radial-gradient(circle at top right, #1a1a1a, #000000);
+            color: var(--text-main);
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .app-container {
+            width: 100%;
+            max-width: 450px;
+            text-align: center;
+        }
+
+        /* Logo e Branding */
+        .branding {
+            margin-bottom: 30px;
+        }
+        .logo-qr {
+            font-size: 60px;
+            font-weight: 900;
+            letter-spacing: -4px;
+            color: #fff;
+            margin-bottom: 5px;
+            text-shadow: 0 0 15px rgba(255,255,255,0.3);
+        }
+        .app-name {
+            font-size: 24px;
+            text-transform: uppercase;
+            letter-spacing: 5px;
+            font-weight: 300;
+            color: #fff;
+        }
+
+        /* Inputs Glassmorphism */
+        .glass-panel {
+            background: var(--glass-bg);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+        }
+
+        select, input, button {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border-radius: 10px;
+            border: 1px solid var(--glass-border);
+            background: rgba(0,0,0,0.3);
+            color: #fff;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+
+        button {
+            background: #fff;
+            color: #000;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+            text-transform: uppercase;
+        }
+
+        button:hover { opacity: 0.8; transform: scale(0.98); }
+
+        /* Grid de Cards */
+        .cards-grid {
+            display: grid;
+            gap: 15px;
+        }
+
+        .card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+            border-radius: 15px;
+            padding: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: 0.4s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card:hover { border-color: rgba(255,255,255,0.4); transform: translateY(-3px); }
+
+        .card-info { text-align: left; }
+        .card-title { font-weight: bold; font-size: 14px; opacity: 0.7; margin-bottom: 5px; }
+        .card-paces { font-size: 20px; font-weight: 800; }
+        .card-range { font-size: 11px; opacity: 0.5; margin-top: 4px; }
+        .card-icon { font-size: 24px; opacity: 0.8; }
+
+        /* Cores das Zonas */
+        .z-facil { border-left: 5px solid #808080; }
+        .z-maratona { border-left: 5px solid #3498db; }
+        .z-limiar { border-left: 5px solid #2ecc71; }
+        .z-intervalo { border-left: 5px solid #f1c40f; }
+        .z-repeticao { border-left: 5px solid #e74c3c; }
+        .z-tiro { border-left: 5px solid #fff; background: rgba(255,255,255,0.08); }
+    </style>
+</head>
+<body>
+
+<div class="app-container">
+    <div class="branding">
+        <div class="logo-qr">QR</div>
+        <div class="app-name">QRZONE</div>
+    </div>
+
+    <div class="glass-panel">
+        <select id="distanciaSelect" onchange="toggleManualDist()">
+            <option value="5">5 KM</option>
+            <option value="10">10 KM</option>
+            <option value="21.1">21.1 KM (Meia)</option>
+            <option value="manual">Outra Distância</option>
+        </select>
+        <input type="number" id="distManual" placeholder="Distância em KM" style="display:none">
+        <input type="text" id="tempoInput" placeholder="Tempo de Teste (Ex: 00:23:00)" value="00:23:00">
+        <button onclick="calcular()">Calcular Zonas</button>
+    </div>
+
+    <div id="cardsResult" class="cards-grid">
+        </div>
+</div>
+
+<script>
+    function toggleManualDist() {
+        const select = document.getElementById('distanciaSelect');
+        document.getElementById('distManual').style.display = select.value === 'manual' ? 'block' : 'none';
+    }
+
+    function timeToSeconds(timeStr) {
+        const parts = timeStr.split(':');
+        return (+parts[0]) * 3600 + (+parts[1]) * 60 + (+parts[2]);
+    }
+
+    function secondsToTime(secs) {
+        const h = Math.floor(secs / 3600);
+        const m = Math.floor((secs % 3600) / 60);
+        const s = Math.round(secs % 60);
+        return [m, s].map(v => v < 10 ? "0" + v : v).join(":");
+    }
+
+    function calcular() {
+        const tempoTotal = timeToSeconds(document.getElementById('tempoInput').value);
+        const dist = document.getElementById('distanciaSelect').value === 'manual' 
+            ? parseFloat(document.getElementById('distManual').value) 
+            : parseFloat(document.getElementById('distanciaSelect').value);
+        
+        const paceMedio = tempoTotal / dist;
+
+        // Multiplicadores baseados no seu histórico de VDOT
+        const mults = {
+            "FÁCIL": 1.242,
+            "MARATONA": 1.105,
+            "LIMIAR": 1.061,
+            "INTERVALADO": 0.974,
+            "REPETIÇÃO": 0.935
+        };
+
+        const icons = {
+            "FÁCIL": "fa-leaf",
+            "MARATONA": "fa-plane-departure", // Ícone Voo Cruzeiro
+            "LIMIAR": "fa-fire", // Ícone Fogo
+            "INTERVALADO": "fa-rocket", // Ícone Foguete
+            "REPETIÇÃO": "fa-gun", // Ícone Arma
+            "TIRO 400m": "fa-bolt"
+        };
+
+        const classes = {
+            "FÁCIL": "z-facil", "MARATONA": "z-maratona", "LIMIAR": "z-limiar",
+            "INTERVALADO": "z-intervalo", "REPETIÇÃO": "z-repeticao", "TIRO 400m": "z-tiro"
+        };
+
+        let html = "";
+        let limiarBase = 0;
+
+        for (let card in mults) {
+            let alvo = paceMedio * mults[card];
+            if(card === "LIMIAR") limiarBase = alvo;
+
+            // Regra de Segurança: -5s Max e +10s Min
+            let max = alvo - 5;
+            let min = alvo + 10;
+
+            html += `
+                <div class="card ${classes[card]}">
+                    <div class="card-info">
+                        <div class="card-title">${card}</div>
+                        <div class="card-paces">${secondsToTime(max)} - ${secondsToTime(min)}</div>
+                        <div class="card-range">Pace Máx (-5s) / Pace Mín (+10s)</div>
+                    </div>
+                    <i class="fas ${icons[card]} card-icon"></i>
+                </div>
+            `;
+        }
+
+        // Racional Tiro 400m: 110% a 115% do Limiar
+        let tiroMax = (limiarBase / 1.15) * 0.4;
+        let tiroMin = (limiarBase / 1.10) * 0.4;
+
+        html += `
+            <div class="card z-tiro">
+                <div class="card-info">
+                    <div class="card-title">TIRO 400m</div>
+                    <div class="card-paces">${secondsToTime(tiroMax)} - ${secondsToTime(tiroMin)}</div>
+                    <div class="card-range">Racional Velocidade: 115% - 110% do Limiar</div>
+                </div>
+                <i class="fas fa-gun card-icon"></i>
+            </div>
+        `;
+
+        document.getElementById('cardsResult').innerHTML = html;
+    }
+
+    window.onload = calcular;
+</script>
+</body>
+</html>
