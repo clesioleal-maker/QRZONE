@@ -4,6 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>QRZONE</title>
+    
+    <link rel="icon" type="image/png" href="logo_qr.png">
+    <link rel="apple-touch-icon" href="logo_qr.png">
+    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
@@ -35,14 +39,13 @@
             min-height: 70px; margin-bottom: 5px;
         }
         
-        /* Ajuste do Logo: removido o filtro que invertia a cor e corrigido o link */
         .logo-img { 
             height: 60px; 
             position: absolute; 
             left: 0; 
-            background: white; /* Adicionado fundo branco para destacar as letras pretas do logo */
-            border-radius: 5px;
-            padding: 2px;
+            background: #fff; 
+            border-radius: 8px;
+            padding: 4px;
         }
         
         .title-group {
@@ -98,8 +101,12 @@
             align-items: center; 
             min-width: 65px;
         }
-        /* Fonte monoespaçada para garantir que o ":" fique sempre no mesmo lugar */
-        .card-paces { font-family: 'Courier New', Courier, monospace; font-size: 19px; font-weight: 900; line-height: 1; }
+        .card-paces { 
+            font-family: 'Courier New', Courier, monospace; 
+            font-size: 19px; 
+            font-weight: 900; 
+            line-height: 1; 
+        }
         .card-subtext { 
             font-size: 9px; 
             text-transform: uppercase; 
