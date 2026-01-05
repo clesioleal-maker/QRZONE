@@ -3,6 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="mobile-web-app-capable" content="yes">
+    
     <title>QRZONE</title>
     
     <link rel="icon" type="image/png" href="logo_qr.png">
@@ -11,120 +16,122 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
-            --glass-bg: rgba(255, 255, 255, 0.04);
-            --glass-border: rgba(255, 255, 255, 0.08);
-            --color-facil: #808080; --color-maratona: #3498db; --color-limiar: #2ecc71;
-            --color-intervalo: #f1c40f; --color-repeticao: #e74c3c; --color-tiro: #ffffff;
+            --glass-bg: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --color-facil: #8e8e93; --color-maratona: #007aff; --color-limiar: #34c759;
+            --color-intervalo: #ffcc00; --color-repeticao: #ff3b30; --color-tiro: #ffffff;
         }
 
-        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        * { 
+            box-sizing: border-box; 
+            -webkit-tap-highlight-color: transparent; 
+            user-select: none;
+        }
 
         body {
             background: #000; color: #fff;
-            font-family: -apple-system, system-ui, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
             margin: 0; padding: 0;
             height: 100vh; width: 100vw;
-            display: flex; justify-content: center; overflow: hidden;
+            display: flex; justify-content: center;
+            overflow: hidden;
         }
 
         .app-container {
-            width: 100%; max-width: 400px;
-            height: 100%;
+            width: 100%; max-width: 420px;
+            height: 100vh;
             display: flex; flex-direction: column;
-            padding: 10px 15px;
+            padding: 10px 15px env(safe-area-inset-bottom);
         }
 
+        /* Cabeçalho */
         .branding {
-            display: flex; align-items: center; position: relative;
-            min-height: 70px; margin-bottom: 5px;
+            display: flex; align-items: center; justify-content: center;
+            position: relative; min-height: 60px; flex-shrink: 0;
         }
-        
         .logo-img { 
-            height: 60px; 
-            position: absolute; 
-            left: 15px; 
-            background: #fff; 
-            border-radius: 8px;
-            padding: 4px;
+            height: 45px; position: absolute; left: 10px;
+            background: #fff; border-radius: 8px; padding: 3px;
         }
-        
-        .title-group {
-            width: 100%;
-            display: flex; flex-direction: column; align-items: center;
+        .title-group { display: flex; flex-direction: column; align-items: center; }
+        .app-name { font-size: 20px; font-weight: 900; letter-spacing: 3px; line-height: 1; }
+        .method-name { font-size: 9px; text-transform: uppercase; letter-spacing: 4px; opacity: 0.6; margin-top: 4px; }
+
+        /* Navegação por Abas (Nova) */
+        .tab-navigation {
+            display: flex; gap: 8px; margin-bottom: 10px; flex-shrink: 0;
         }
-        .app-name { font-size: 22px; font-weight: 900; letter-spacing: 3px; line-height: 1; }
-        .method-name { font-size: 10px; text-transform: uppercase; letter-spacing: 4px; font-weight: 300; opacity: 0.8; margin-top: 3px; }
+        .tab-btn {
+            flex: 1; padding: 10px; border-radius: 10px;
+            background: var(--glass-bg); border: 1px solid var(--glass-border);
+            color: #fff; font-size: 11px; font-weight: 700; text-transform: uppercase;
+            cursor: pointer; text-align: center;
+        }
+        .tab-btn.active { background: #fff; color: #000; border-color: #fff; }
 
         .glass-panel {
-            background: var(--glass-bg); border: 1px solid var(--glass-border);
-            border-radius: 15px; padding: 12px; margin-bottom: 8px;
+            background: var(--glass-bg); 
+            backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+            border-radius: 18px; padding: 12px; margin-bottom: 10px;
+            flex-shrink: 0;
         }
 
-        .input-group { margin-bottom: 6px; }
-        label { font-size: 9px; text-transform: uppercase; letter-spacing: 1px; opacity: 0.6; display: block; margin-bottom: 2px; }
+        .input-group { margin-bottom: 8px; }
+        label { font-size: 9px; text-transform: uppercase; letter-spacing: 1px; opacity: 0.5; display: block; margin-bottom: 4px; padding-left: 5px; }
 
         select, input {
-            width: 100%; padding: 8px 12px; border-radius: 8px;
-            background: #000 !important; border: 1px solid var(--glass-border);
-            color: #fff; font-size: 14px; outline: none; -webkit-appearance: none;
+            width: 100%; padding: 10px 12px; border-radius: 10px;
+            background: rgba(255,255,255,0.08) !important; border: 1px solid var(--glass-border);
+            color: #fff; font-size: 15px; outline: none; -webkit-appearance: none;
         }
 
-        button {
-            width: 100%; padding: 10px; border-radius: 8px;
-            background: #fff; color: #000; font-weight: 900;
-            border: none; font-size: 12px; text-transform: uppercase; cursor: pointer;
+        button.calc-btn {
+            width: 100%; padding: 12px; border-radius: 10px;
+            background: #fff; color: #000; font-weight: 800;
+            border: none; font-size: 13px; text-transform: uppercase;
         }
 
         .cards-grid {
-            flex-grow: 1;
+            flex: 1; 
+            overflow-y: auto; 
             display: flex; flex-direction: column;
-            gap: 5px; 
-            padding-bottom: 30px; /* Mantém o card de 400m subido */
+            gap: 8px; 
+            padding-bottom: 20px;
+            -webkit-overflow-scrolling: touch;
         }
+        .cards-grid::-webkit-scrollbar { display: none; }
 
+        /* Estilo Original dos Cards */
         .card {
-            flex: 1;
+            min-height: 70px; flex-shrink: 0;
             background: var(--glass-bg); border: 1px solid var(--glass-border);
-            border-radius: 12px; padding: 0 15px;
+            border-radius: 16px; padding: 0 15px;
             display: flex; align-items: center; justify-content: space-between;
         }
 
         .card-info { text-align: left; flex-grow: 1; }
         .card-title { font-weight: 800; font-size: 10px; text-transform: uppercase; margin-bottom: 2px; }
         
-        .paces-container {
-            display: flex;
-            gap: 20px;
-        }
-        .pace-box {
-            display: flex;
-            flex-direction: column;
-            align-items: center; 
-            min-width: 65px;
-        }
-        .card-paces { 
-            font-family: 'Courier New', Courier, monospace; 
-            font-size: 19px; 
-            font-weight: 900; 
-            line-height: 1; 
-        }
-        .card-subtext { 
-            font-size: 9px; 
-            text-transform: uppercase; 
-            letter-spacing: 1px; 
-            opacity: 0.5; 
-            font-weight: 700;
-            margin-top: 2px;
-        }
+        .paces-container { display: flex; gap: 20px; }
+        .pace-box { display: flex; flex-direction: column; align-items: center; min-width: 65px; }
+        .card-paces { font-family: 'Courier New', monospace; font-size: 18px; font-weight: 900; line-height: 1; }
+        .card-subtext { font-size: 8px; text-transform: uppercase; letter-spacing: 1px; opacity: 0.4; margin-top: 3px; }
 
-        .card-icon { font-size: 18px; margin-left: 10px; }
+        .card-icon { font-size: 18px; margin-left: 10px; opacity: 0.7; }
 
-        .z-facil { border-left: 3px solid var(--color-facil); } .z-facil i, .z-facil .card-title { color: var(--color-facil); }
-        .z-maratona { border-left: 3px solid var(--color-maratona); } .z-maratona i, .z-maratona .card-title { color: var(--color-maratona); }
-        .z-limiar { border-left: 3px solid var(--color-limiar); } .z-limiar i, .z-limiar .card-title { color: var(--color-limiar); }
-        .z-intervalo { border-left: 3px solid var(--color-intervalo); } .z-intervalo i, .z-intervalo .card-title { color: var(--color-intervalo); }
-        .z-repeticao { border-left: 3px solid var(--color-repeticao); } .z-repeticao i, .z-repeticao .card-title { color: var(--color-repeticao); }
-        .z-tiro { border-left: 3px solid var(--color-tiro); } .z-tiro i, .z-tiro .card-title { color: var(--color-tiro); }
+        /* Classes de Cores Originais */
+        .z-facil { border-left: 4px solid var(--color-facil); } .z-facil i, .z-facil .card-title, .z-facil .card-paces { color: var(--color-facil); }
+        .z-maratona { border-left: 4px solid var(--color-maratona); } .z-maratona i, .z-maratona .card-title, .z-maratona .card-paces { color: var(--color-maratona); }
+        .z-limiar { border-left: 4px solid var(--color-limiar); } .z-limiar i, .z-limiar .card-title, .z-limiar .card-paces { color: var(--color-limiar); }
+        .z-intervalo { border-left: 4px solid var(--color-intervalo); } .z-intervalo i, .z-intervalo .card-title, .z-intervalo .card-paces { color: var(--color-intervalo); }
+        .z-repeticao { border-left: 4px solid var(--color-repeticao); } .z-repeticao i, .z-repeticao .card-title, .z-repeticao .card-paces { color: var(--color-repeticao); }
+        .z-tiro { border-left: 4px solid var(--color-tiro); } .z-tiro i, .z-tiro .card-title, .z-tiro .card-paces { color: var(--color-tiro); }
+        
+        /* Classe para Projeção (Tela 2) */
+        .z-proj { border-left: 4px solid #fff; }
+
+        .hidden { display: none; }
     </style>
 </head>
 <body>
@@ -138,55 +145,90 @@
         </div>
     </div>
 
+    <div class="tab-navigation">
+        <div id="tab1" class="tab-btn active" onclick="showTab('ritmos')">Ritmos</div>
+        <div id="tab2" class="tab-btn" onclick="showTab('projecao')">Projeção</div>
+    </div>
+
     <div class="glass-panel">
         <div class="input-group">
-            <label>Distância</label>
+            <label>Distância de Referência</label>
             <select id="distSelect" onchange="toggleManual()">
+                <option value="3">3 KM</option>
                 <option value="5">5 KM</option>
                 <option value="10" selected>10 KM</option>
                 <option value="21.1">21.1 KM (Meia)</option>
+                <option value="42.2">42.2 KM (Maratona)</option>
                 <option value="manual">Outra</option>
             </select>
-            <input type="number" id="distManual" style="display:none; margin-top:5px" placeholder="Distância em KM">
+            <input type="number" id="distManual" style="display:none; margin-top:8px" placeholder="KM">
         </div>
         <div class="input-group">
-            <label>Tempo (HH:MM:SS)</label>
-            <input type="text" id="tempoInput" value="00:50:00" oninput="maskTime(this)">
+            <label>Tempo Obtido (HH:MM:SS)</label>
+            <input type="text" id="tempoInput" value="00:50:00" oninput="maskTime(this)" inputmode="numeric">
         </div>
-        <button onclick="calcular()">CALCULAR</button>
+        <button class="calc-btn" onclick="calcularTudo()">CALCULAR</button>
     </div>
 
-    <div id="cardsResult" class="cards-grid"></div>
+    <div id="cardsRitmos" class="cards-grid"></div>
+
+    <div id="cardsProjecao" class="cards-grid hidden"></div>
 </div>
 
 <script>
+    function showTab(tab) {
+        if(tab === 'ritmos') {
+            document.getElementById('cardsRitmos').classList.remove('hidden');
+            document.getElementById('cardsProjecao').classList.add('hidden');
+            document.getElementById('tab1').classList.add('active');
+            document.getElementById('tab2').classList.remove('active');
+        } else {
+            document.getElementById('cardsRitmos').classList.add('hidden');
+            document.getElementById('cardsProjecao').classList.remove('hidden');
+            document.getElementById('tab1').classList.remove('active');
+            document.getElementById('tab2').classList.add('active');
+        }
+    }
+
     function maskTime(i) {
         let v = i.value.replace(/\D/g,"");
         if(v.length>6) v=v.slice(0,6);
         i.value = v.replace(/(\d{2})(\d{2})(\d{2})/, "$1:$2:$3").replace(/(\d{2})(\d{2})/, "$1:$2");
     }
+
     function toggleManual() {
         const s = document.getElementById('distSelect');
         document.getElementById('distManual').style.display = s.value === 'manual' ? 'block' : 'none';
     }
+
     function t2s(t) { const p = t.split(':'); return p.length<3?0:(+p[0])*3600+(+p[1])*60+(+p[2]); }
-    function s2t(s) { 
-        const m = Math.floor((s%3600)/60), sec = Math.round(s%60);
+    
+    // Função de tempo ajustada para mostrar Horas se necessário
+    function s2t(s, forceHours = false) { 
+        const h = Math.floor(s/3600);
+        const m = Math.floor((s%3600)/60);
+        const sec = Math.round(s%60);
+        if (h > 0 || forceHours) {
+            return [h,m,sec].map(v=>v<10?"0"+v:v).join(":");
+        }
         return [m,sec].map(v=>v<10?"0"+v:v).join(":");
     }
-    function calcular() {
+
+    function calcularTudo() {
         const t = t2s(document.getElementById('tempoInput').value); if(!t) return;
         const d = document.getElementById('distSelect').value==='manual'?parseFloat(document.getElementById('distManual').value):parseFloat(document.getElementById('distSelect').value);
         if(!d) return;
+
+        // --- CÁLCULO RITMOS (TELA 1) ---
         const p = t/d;
         const m = {"FÁCIL":1.242,"MARATONA":1.105,"LIMIAR":1.061,"INTERVALADO":0.974,"REPETIÇÃO":0.935};
         const icons = {"FÁCIL":"fa-leaf","MARATONA":"fa-plane-departure","LIMIAR":"fa-fire","INTERVALADO":"fa-rocket","REPETIÇÃO":"fa-gun","TIRO 400m":"fa-bolt"};
         const classes = {"FÁCIL":"z-facil","MARATONA":"z-maratona","LIMIAR":"z-limiar","INTERVALADO":"z-intervalo","REPETIÇÃO":"z-repeticao","TIRO 400m":"z-tiro"};
-        let h = ""; let lb = 0;
+        let hRitmos = ""; let lb = 0;
         
         for(let k in m){
             let a = p*m[k]; if(k==="LIMIAR") lb=a;
-            h += `
+            hRitmos += `
             <div class="card ${classes[k]}">
                 <div class="card-info">
                     <div class="card-title">${k}</div>
@@ -199,9 +241,7 @@
             </div>`;
         }
         
-        /* AJUSTE TIRO 400m: Agora exibe o PACE (ritmo por km) */
-        /* Mínimo (mais rápido): Limiar / 1.20 | Máximo (mais lento): Limiar / 1.15 */
-        h += `
+        hRitmos += `
         <div class="card z-tiro">
             <div class="card-info">
                 <div class="card-title">TIRO 400m</div>
@@ -212,10 +252,38 @@
             </div>
             <i class="fas fa-bolt card-icon"></i>
         </div>`;
-        
-        document.getElementById('cardsResult').innerHTML = h;
+        document.getElementById('cardsRitmos').innerHTML = hRitmos;
+
+        // --- CÁLCULO PROJEÇÃO (TELA 2) ---
+        const distsProj = [5, 10, 15, 21.1, 42.2];
+        let hProj = "";
+        distsProj.forEach(dp => {
+            // Riegel: T2 = T1 * (D2/D1)^1.06
+            const tempoProj = t * Math.pow((dp / d), 1.06);
+            const paceProj = tempoProj / dp;
+            
+            hProj += `
+            <div class="card z-proj">
+                <div class="card-info">
+                    <div class="card-title">PROJEÇÃO ${dp}K</div>
+                    <div class="paces-container">
+                        <div class="pace-box" style="align-items: flex-start; min-width: 100px;">
+                            <span class="card-paces" style="color:#fff">${s2t(tempoProj, true)}</span>
+                            <span class="card-subtext">TEMPO FINAL</span>
+                        </div>
+                        <div class="pace-box" style="align-items: flex-start;">
+                            <span class="card-paces" style="color:var(--color-limiar)">${s2t(paceProj)}</span>
+                            <span class="card-subtext">PACE /KM</span>
+                        </div>
+                    </div>
+                </div>
+                <i class="fas fa-stopwatch card-icon"></i>
+            </div>`;
+        });
+        document.getElementById('cardsProjecao').innerHTML = hProj;
     }
-    window.onload = calcular;
+
+    window.onload = calcularTudo;
 </script>
 </body>
 </html>
